@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\SliderController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth; 
 
@@ -66,6 +67,15 @@ Route::prefix('admin')->middleware('auth','isAdmin')->group(function (){
     Route::resource('color', ColorController::class);
     
     
+    Route::group(['prefix' => 'slider'], function () {
+        Route::get('/', [App\Http\Controllers\Admin\SliderController::class, 'index']);
+        Route::get('create', [App\Http\Controllers\Admin\SliderController::class, 'create'])->name('slider.create');
+        Route::post('/', [App\Http\Controllers\Admin\SliderController::class, 'store'])->name('slider.store');
+        Route::get('{id}/edit', [App\Http\Controllers\Admin\SliderController::class, 'edit'])->name('slider.edit');
+        Route::put('{id}', [App\Http\Controllers\Admin\SliderController::class, 'update'])->name('slider.update');
+        Route::delete('bulk-delete', [App\Http\Controllers\Admin\SliderController::class, 'bulkDestroy']);
+    });
+    Route::resource('slider', SliderController::class);
     
     
 

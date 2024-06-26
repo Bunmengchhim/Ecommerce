@@ -33,14 +33,14 @@ class SliderController extends Controller
     {
         // Validate the form data
         $request->validate([
-            'title' => 'required|string|max:255|unique:sli$sliders,name',
+            'title' => 'required|string|max:255|unique:sliders,title',
             'description' => 'required|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // adjust max file size as needed
         ]);
 
         // Handle file upload if an image is provided
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('slider_images', 'public');
+            $imagePath = $request->file('image')->store('category_images', 'public');
         } else {
             $imagePath = null;
         }
@@ -65,11 +65,12 @@ class SliderController extends Controller
         return view('admin.slider.edit', compact('slider'));
     }
 
+    
     public function update(Request $request, $id)
     {
         // Validate the form data
         $request->validate([
-            'title' => 'required|string|max:255|unique:$sliders,title,' . $id,
+            'title' => 'required|string|max:255|unique:sliders,title,' . $id,
             'description' => 'required|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', 
         ]);
@@ -89,7 +90,6 @@ class SliderController extends Controller
 
         $slider->title = $request->title;
         $slider->description = $request->description;
-        $slider->image = $imagePath;
         $slider->status = $request->status == true ? '1' : '0';
 
         // Save the updated slider
