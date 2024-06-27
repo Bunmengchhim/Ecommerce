@@ -36,25 +36,29 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255|unique:categories,name',
             'slug' => 'required|string|max:255',
             'description' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // adjust max file size as needed
+            'image' => 'nullable|image|mimes:jpeg,png,jpg', // adjust max file size as needed
             'meta_title' => 'required|string|max:255',
             'meta_keywords' => 'required|string|max:255',
             'meta_description' => 'required|string|max:255',
         ]);
 
-        // Handle file upload if an image is provided
+
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('category_images', 'public');
+            $uploadPath = 'category_images/';
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs($uploadPath, $filename, 'public');
         } else {
-            $imagePath = null;
+            $path = null;
         }
+
 
         // Create a new Category instance
         $category = new Category();
         $category->name = $request->name;
         $category->slug = $request->slug;
         $category->description = $request->description;
-        $category->image = $imagePath;
+        $category->image = $path;
         $category->meta_title = $request->meta_title;
         $category->meta_keywords = $request->meta_keywords;
         $category->meta_description = $request->meta_description;
@@ -80,7 +84,7 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255|unique:categories,name,' . $id,
             'slug' => 'required|string|max:255',
             'description' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // adjust max file size as needed
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif', // adjust max file size as needed
             'meta_title' => 'required|string|max:255',
             'meta_keywords' => 'required|string|max:255',
             'meta_description' => 'required|string|max:255',
@@ -90,19 +94,21 @@ class CategoryController extends Controller
         $category = Category::findOrFail($id);
 
         // Handle file upload if an image is provided
+        
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('category_images', 'public');
-            // Delete old image if exists
-            if ($category->image) {
-                Storage::disk('public')->delete($category->image);
-            }
-            $category->image = $imagePath;
+            $uploadPath = 'category_images/';
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs($uploadPath, $filename, 'public');
+        } else {
+            $path = null;
         }
 
         // Update category details
         $category->name = $request->name;
         $category->slug = $request->slug;
         $category->description = $request->description;
+        $category->image = $path;
         $category->meta_title = $request->meta_title;
         $category->meta_keywords = $request->meta_keywords;
         $category->meta_description = $request->meta_description;

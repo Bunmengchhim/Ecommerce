@@ -53,6 +53,7 @@
                     </th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Slug</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
@@ -66,6 +67,7 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $brand->id }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $brand->name }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ $brand->category->name }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $brand->slug }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="{{ $brand->status == '1' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} inline-block px-2 py-1 rounded-lg">
@@ -125,6 +127,22 @@
                 <!-- Form for creating a new brand -->
                 <form action="{{ route('brand.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
+
+                    <div class="mb-4">
+                        <label for="category_id" class="block text-sm font-medium text-gray-700">Category</label>
+                        <select name="category_id" id="category_id" class="mt-1 py-2 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 focus:ring-blue-500">
+                            <option value="">Select Category</option>
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('category_id')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    
+
                     <div class="mb-4">
                         <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
                         <input type="text" name="name" id="name" value="{{ old('name') }}" class="mt-1 px-3 py-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-blue-500">
@@ -172,6 +190,20 @@
                 <form id="edit-brand-form" action="" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
+
+
+                    <div class="mb-4">
+                        <label for="edit-category_id" class="block text-sm font-medium text-gray-700">Category</label>
+                        <select name="category_id" id="edit-category_id" class="mt-1 py-2 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 focus:ring-blue-500">
+                            
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('category_id')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
                     <input type="hidden" id="edit-brand-id" name="id">
                     <div class="mb-4">
                         <label for="edit-name" class="block text-sm font-medium text-gray-700">Name</label>
@@ -371,6 +403,10 @@ function openCreateBrandModal() {
             document.getElementById('edit-name').value = data.name;
             document.getElementById('edit-slug').value = data.slug;
             document.getElementById('edit-status').checked = data.status == '1';
+
+                        // Update category selection
+            let categorySelect = document.getElementById('edit-category_id');
+            categorySelect.value = data.category_id;
 
             document.getElementById('edit-brand-form').action = `/admin/brand/${id}`;
 

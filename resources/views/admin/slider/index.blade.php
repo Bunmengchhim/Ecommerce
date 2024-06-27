@@ -19,7 +19,7 @@
 
     <div class="mb-4">
         <button onclick="bulkDelete()" class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg shadow-md transition duration-200">
-            <i class="fas fa-trash-alt"></i> Delete Selected
+            <i class="fas fa-trash-alt"></i>
         </button>
     </div>
 
@@ -280,7 +280,7 @@ document.getElementById('select-all').addEventListener('click', function(event) 
             </div>
             <div class="text-sm">
                 <p><strong>ID:</strong> ${data.id}</p>
-                <p><strong>Name:</strong> ${data.name}</p>
+                <p><strong>Name:</strong> ${data.title}</p>
                 <p><strong>Description:</strong> ${data.description}</p>
                 <p><strong>Status:</strong> <span class="${data.status == '1' ? 'text-green-500' : 'text-red-500'}">${data.status == '1' ? 'Active' : 'Inactive'}</span></p>
             </div>

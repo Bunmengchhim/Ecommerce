@@ -5,12 +5,15 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Frontend\FrontendController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth; 
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
+
+Route::get('/',[FrontendController::class, 'index']);
+Route::get('/collections',[FrontendController::class, 'categories']);
+Route::get('/collections/{category_slug}',[FrontendController::class, 'products']);
 
 Auth::routes();
 

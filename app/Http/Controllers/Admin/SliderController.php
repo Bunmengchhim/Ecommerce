@@ -35,29 +35,34 @@ class SliderController extends Controller
         $request->validate([
             'title' => 'required|string|max:255|unique:sliders,title',
             'description' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // adjust max file size as needed
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240', // Allow up to 10 MB
         ]);
-
+    
         // Handle file upload if an image is provided
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('category_images', 'public');
+            $uploadPath = 'slider_images/';
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs($uploadPath, $filename, 'public');
         } else {
-            $imagePath = null;
+            $path = null;
         }
-
+    
         // Create a new Slider instance
         $slider = new Slider();
         $slider->title = $request->title;
         $slider->description = $request->description;
-        $slider->image = $imagePath;
+        $slider->image = $path;
         $slider->status = $request->status == true ? '1' : '0';
-
+    
         // Save the slider
         $slider->save();
-
+    
         // Redirect to a success page or back with a success message
         return redirect('admin/slider')->with('success', 'Slider created successfully.');
     }
+    
+    
 
     public function edit($id)
     {

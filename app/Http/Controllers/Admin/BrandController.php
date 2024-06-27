@@ -4,11 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class BrandController extends Controller
 {
     public function index(Request $request){
+
+        $categories = Category::where('status','1')->get(); 
+
         $query = Brand::query();
 
         if ($request->filled('search')) {
@@ -21,12 +25,9 @@ class BrandController extends Controller
 
         $brands = $query->paginate(5);
 
-        return view('admin.brand.index', compact('brands'));
+        return view('admin.brand.index', compact('brands','categories'));
     }
 
-    public function create(){
-        return view('admin.brand.create');
-    }
 
     public function store(Request $request)
     {
@@ -34,12 +35,14 @@ class BrandController extends Controller
         $request->validate([
             'name' => 'required|string|max:255|unique:brands,name',
             'slug' => 'required|string|max:255',
+            'category_id' => 'required|integer',
         ]);
 
         // Create a new Category instance
         $brands = new Brand();
         $brands->name = $request->name;
         $brands->slug = $request->slug;
+        $brands->category_id = $request->category_id;
         $brands->status = $request->status == true ? '1' : '0';
 
         // Save the category
@@ -56,11 +59,13 @@ class BrandController extends Controller
         $request->validate([
             'name' => 'required|string|max:255|unique:brands,name,' . $id,
             'slug' => 'required|string|max:255',
+            'category_id' => 'required|integer',
         ]);
 
         $brand = Brand::findOrFail($id);
         $brand->name = $request->name;
         $brand->slug = $request->slug;
+        $brand->category_id = $request->category_id;        
         $brand->status = $request->status == true ? '1' : '0';
         $brand->save();
 

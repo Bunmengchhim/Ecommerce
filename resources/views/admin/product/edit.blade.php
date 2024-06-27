@@ -68,7 +68,7 @@
                         <select name="brand" id="brand" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-blue-500">
                             <option value="">Select Brand</option>
                             @foreach($brands as $brand)
-                                <option value="{{ $brand->id }}" {{ old('brand', $product->brand) == $brand->id ? 'selected' : '' }}>{{ $brand->name }}</option>
+                                <option value="{{ $brand->name }}" {{ $brand->name == $product->brand ? 'selected' : '' }}>{{ $brand->name }}</option>
                             @endforeach
                         </select>
                         @error('brand')
